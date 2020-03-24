@@ -1,0 +1,312 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Documentclass
+% -------------------
+% Defines the documentclass
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[a4paper,11pt,titlepage,fleqn]{report}
+
+
+
+\usepackage[usenames, dvipsnames]{color}
+\usepackage[table]{xcolor}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Needed packages
+% -------------------
+% Inclusion and configuration of all packages that are needed in the 
+% document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% -------------------------------------
+% Encoding
+% -------------------------------------
+\usepackage[utf8]{inputenc}
+
+% -------------------------------------
+% German translations and other audjustments
+% -------------------------------------
+\usepackage[english,ngerman]{babel}
+
+% -------------------------------------
+% Quotation signs
+% http://www.tug.org/texlive/Contents/live/texmf-dist/doc/latex/csquotes/csquotes.pdf
+% -------------------------------------
+% German style (Example: "Quote")
+% \usepackage[babel,german=quotes]{csquotes}
+% Swiss style (Example: >>Quote<<)
+\usepackage[babel,german=guillemets]{csquotes}
+% French style (Example: <<Quote>>)
+%\usepackage[babel,german=swiss]{csquotes}
+
+% -------------------------------------
+% Use T1 fonts
+% -------------------------------------
+\usepackage[T1]{fontenc}
+
+% -------------------------------------
+% Font configuration (See http://www.tug.dk/FontCatalogue)
+% Please make sure that you just use T1 fonts here. Recommended fonts
+% are the following:
+%   - Computer Modern (Serif)
+%   - Adobe Utopia Math Design (Serif)
+%   - Charter BT (Serif)
+% -------------------------------------
+% \usepackage{lmodern}
+%\usepackage[adobe-utopia]{mathdesign}
+\usepackage[bitstream-charter]{mathdesign}
+
+% -------------------------------------
+% Typewriter font configuration (See http://www.tug.dk/FontCatalogue)
+% Please make sure that you just use T1 fonts here.
+% -------------------------------------
+\usepackage[scaled]{beramono}
+%\usepackage{inconsolata}
+%\usepackage{DejaVuSansMono}
+
+% -------------------------------------
+% Used to adjust the margins of the page
+% http://ctan.mackichan.com/macros/latex/contrib/anysize/anysize.pdf
+% -------------------------------------
+\usepackage{anysize}
+\usepackage[strict]{changepage}
+
+% -------------------------------------
+% Used to adjust the title of chapters and the table of contents
+% ftp://tug.ctan.org/pub/tex-archive/macros/latex/contrib/titlesec/titlesec.pdf
+% -------------------------------------
+\usepackage{titlesec}
+\usepackage{titletoc}
+
+% -------------------------------------
+% Used to adjust the header and footer of the page
+% http://ftp.gwdg.de/pub/ctan/macros/latex/contrib/fancyhdr/fancyhdr.pdf
+% -------------------------------------
+\usepackage{fancyhdr}
+
+% -------------------------------------
+% URLs
+% -------------------------------------
+\usepackage[hyphens]{url}
+
+% -------------------------------------
+% PDF improvments like internal hyperlinks and bookmarks
+% -------------------------------------
+\usepackage[
+    bookmarks=true,
+    bookmarksopen=true,
+    bookmarksnumbered=true,
+    pdfstartpage=1,
+    pdftitle={},
+    pdfauthor={\student},
+    breaklinks=true,
+% Uncomment these lines to avoid that the links are marked with boxes
+    colorlinks=true,
+    linkcolor=black,
+    anchorcolor=black,
+    citecolor=black,
+    filecolor=black,
+    menucolor=black,
+    urlcolor=black,
+]
+{hyperref}
+
+% -------------------------------------
+% Packages for graphics
+% -------------------------------------
+\usepackage{graphicx}
+\usepackage{graphics} 
+\usepackage{color}
+
+% -------------------------------------
+% Packages to create high-quality tabulars
+% -------------------------------------
+\usepackage{longtable}
+\usepackage{booktabs}
+
+% -------------------------------------
+% Package to create code listings
+% ftp://tug.ctan.org/pub/tex-archive/macros/latex/contrib/titlesec/titlesec.pdf 
+% -------------------------------------
+\usepackage{listings}
+
+% -------------------------------------
+% Inclusion of pdf documents
+% -------------------------------------
+\usepackage{pdfpages}
+\usepackage{pdflscape} 
+
+% -------------------------------------
+% Multiple columns (used for the abstract)
+% -------------------------------------
+\usepackage{multicol}
+
+% -------------------------------------
+% Citations
+% -------------------------------------
+\usepackage[numbers]{natbib}
+
+% -------------------------------------
+% Glossary
+% -------------------------------------
+\usepackage[nonumberlist, acronym]{glossaries}
+\renewcommand*{\glspostdescription}{}
+
+% -------------------------------------
+% Acronyms
+% -------------------------------------
+%\usepackage[printonlyused]{acronym}
+\usepackage{nomencl}
+
+% -------------------------------------
+% Mathematic equations
+% -------------------------------------
+\usepackage{amsmath}
+%\usepackage{txfonts}
+
+% -------------------------------------
+% Footnotes
+% -------------------------------------
+\usepackage[singlespacing]{setspace}
+\usepackage{scrextend}
+\usepackage{chngcntr}
+
+%color
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document adjustments
+% -------------------
+% Audjustments that have influence on the document generation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% -------------------------------------
+% Adjusts the baselinestretching and the spacing between tabular lines
+% -------------------------------------
+\renewcommand{\baselinestretch}{1.2}\normalsize
+\renewcommand{\arraystretch}{1.25}
+
+% -------------------------------------
+% Avoids that 'Chapter X' is printed
+% See package titlesec for more information
+% -------------------------------------
+\titleformat{\chapter}{\bf\LARGE}{\thechapter\quad}{0em}{}
+\titlespacing{\chapter}{0pt}{-2em}{1em}
+
+% -------------------------------------
+% Shows the current chapter and the pagenumber in the header
+% See package fancyhdr for more information
+% -------------------------------------
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\textsc{\thechapter\ #1}}{}}
+\fancyhead{}
+\fancyfoot{}
+\lhead{\nouppercase{\textsc{\leftmark}}}
+\rhead{\thepage}
+\fancypagestyle{plain}{%
+	\fancyhead{}
+	\fancyfoot{}
+	\lhead{\nouppercase{\textsc{\leftmark}}}
+	\rhead{\thepage}
+}
+
+% -------------------------------------
+% Decrease spacing between chapters in table of contents
+% -------------------------------------
+\addtocontents{toc}{\vspace{-3ex}}
+
+% -------------------------------------
+% Chapter numbering und the table of contents should be done till 
+% subsubsections
+% -------------------------------------
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{2}
+
+% -------------------------------------
+% Adjusts the margins of the page
+% Uncomment the line to get the standard margins
+% See package anysize for more information
+% -------------------------------------
+%\marginsize{3cm}{3cm}{2cm}{2cm}
+
+% -------------------------------------
+% Changes the default typewriter font (used for texttt and code 
+% listings) to TXTT
+% See http://www.tug.dk/FontCatalogue/typewriterfonts.html for more 
+% fonts
+% -------------------------------------
+%\renewcommand*\ttdefault{txtt}
+
+% -------------------------------------
+% Define colors that can be used in the document (used for syntax 
+% highlighting in code listings)
+% -------------------------------------
+\definecolor{lightgray}{rgb}{0.95,0.95,0.95}
+\definecolor{darkblue}{rgb}{0,0,0.75}
+\definecolor{darkred}{rgb}{0.75,0,0}
+\definecolor{darkgreen}{rgb}{0,0.75,0}
+
+% -------------------------------------
+% Configuration for code listings
+% See package listings for more information
+% -------------------------------------
+\lstset{
+    basicstyle=\ttfamily\small\mdseries,
+    keywordstyle=\color{darkblue}\bf,%\bfseries,
+    identifierstyle=,
+    commentstyle=\color[rgb]{.133,.545,.133},%\color{darkgreen},
+    stringstyle=\color{darkred},
+    numbers=left,
+    numberstyle=\tiny\ttfamily,
+    % Defines the interval between the line numbers
+    stepnumber=1,
+    numberfirstline=false,
+    firstnumber=1,
+    breaklines=true,
+    frame=single,
+    framerule=0pt,
+%    frameshape={nnn}{n4}{n}{nnn},
+    backgroundcolor=\color{lightgray},
+    showstringspaces=false,
+    tabsize=4,
+    captionpos=b,
+    float=htbp,
+    xleftmargin=3ex,
+    xrightmargin=3ex,
+    belowcaptionskip=2ex,
+    escapeinside={@}{@},
+    breakatwhitespace=true,
+    breakautoindent=true
+}
+
+% -------------------------------------
+% Use the quotation signs configured in csquotes
+% -------------------------------------
+\defineshorthand{"`}{\openautoquote}
+\defineshorthand{"'}{\closeautoquote}
+
+% -------------------------------------
+% Footnote format
+% -------------------------------------
+\deffootnote[1em]{1em}{1em}{\textsuperscript{\thefootnotemark\ }}
+\counterwithout{footnote}{chapter}
+
+% -------------------------------------
+% Acronyms
+% -------------------------------------
+% German title
+\renewcommand{\nomname}{Abkürzungsverzeichnis}
+% Print dots between acronym and description
+\setlength{\nomlabelwidth}{.20\hsize}
+\renewcommand{\nomlabel}[1]{#1 \dotfill}
+% Decrease line height
+\setlength{\nomitemsep}{-\parsep}
+
+% --- Abkürzung bei der ersten Verwendung ------------------
+%Zum Abkürzungsverzeichnis hinzufügen
+%Neuen Anker für die Abkürzung setzen
+%Link auf Abkürzungsverzeichnis, Abkürzung und Bedeutung ausschreiben
+\newcommand{\abkDef}[2]{\nomenclature{#1}{#2}\label{Abk.#1}\hyperref[AbkVz]{#1 (#2)}}
+
+% --- Abkürzung bei weiterer Verwendung --------------------
+\newcommand{\abk}[1]{\hyperref[Abk.#1]{#1}} 
+
+\definecolor{light-gray}{gray}{0.90}
+\newcommand{\clstinline}[1]{\colorbox{light-gray}{\lstinline|#1|}}

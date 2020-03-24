@@ -1,0 +1,26 @@
+\documentclass{article}
+
+\usepackage{Sweave}
+\begin{document}
+\input{Coursework-Big-Data-concordance}
+
+\Title{1504107 - Coursework}
+
+\subTitle{1. Data Exploration}
+
+\subTitle{1.1 Dataset Choice}
+
+The dataset "Breast Cancer Wisconsin (Original)" was choosen and was obtained from UC Irvine Machine Learning Repository website. 
+
+I choose the "Breast Cancer Wisconsin (Original)" dataset as I believe I would be able to find solid relationships between the classes of tumors and the nine contrubuting factors within the dataset. 
+
+
+\subTitle{1.2 Problem Statement & Data Exploration}
+
+The choosen dataset contains records of patients with tumors, the tumors are classafied as either 'Benign' or 'Malignant'. Each tumor sample, uniquely identified using a 'Sample code number', is given various values from 1-10 on varing factors including 'Clump Thickness' and 'Mitoses'. The aim is to predict wether a tumor will be 'benign' or 'melignant' depending on these varying factors. 
+
+The dataset will be used to build a model to predict if a tumor is either melignant or benign. Using all nine of the other factor, the model created should be able to predict, with a fair degree of accuracy, wether or not a sample tumor is melignant or benign.
+
+\begin{Schunk}
+\begin{Sinput}
+> install.packages("randomForest")

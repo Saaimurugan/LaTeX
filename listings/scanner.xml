@@ -1,0 +1,62 @@
+d<project name="Test_Projekt" default="build">
+<property name="toolsdir" value=""/>
+<property name="application" value="/trunk/vicnum" />
+<property name="ip" value="URL der Webapplikation" />
+<target name="build" depends="prepare,arachni,arachni_reporter,unzip,w3af,wapiti"/>
+<target name="build-sequential" depends="clean,prepare,tools-sequential" description=""/>
+<target name="tools-sequential" description="Run tools in sequential">
+<sequential>
+	<antcall target="w3af" />
+	<antcall target="wapiti" />
+	<antcall target="arachni" />
+	<antcall target="arachni_reporter" />
+	<antcall target="unzip" />
+</sequential>
+</target>
+<target name="clean" unless="clean.done" description="Cleanup build artifacts">
+	<delete dir="${basedir}/scan_reports"/>
+	<property name="clean.done" value="true"/>
+</target>
+<target name="prepare" unless="prepare.done" depends="clean" description="Prepare for build">
+	<mkdir dir="${basedir}/scan_reports"/>
+	<chmod dir="${basedir}/scan_reports" perm="775" />
+	<property name="prepare.done" value="true"/>
+</target>
+<target name="w3af" description="Start a Webvulnerability Scan with w3af and generate a Report">
+	<exec executable="/home/administrator/w3af/w3af_console">
+		<arg value="-s${basedir}/w3af_script"/>
+	</exec>
+</target>
+<target name="wapiti" description="Start a Webvulnerability Scan with Wapiti and generate a Report">
+	<exec executable="wapiti">
+		<arg value="${ip}"/>
+		<arg value="-n10"/>
+		<arg value="-fhtml"/>
+		<arg value="-o/var/lib/jenkins/workspace/Test_Projekt/scan_reports/wapiti"/>
+		<arg value="-m-all,xss,sql,permanentxss"/>
+	</exec>
+</target>
+<target name="arachni" description="Start a Webvulnerability Scan with arachni and generate a Report">
+	<exec executable="/home/administrator/arachni/bin/arachni">
+		<arg value="${ip}"/>
+		<arg value="--audit-forms"/>
+		<arg value="--audit-links"/>
+		<arg value="--audit-cookies"/>
+		<arg value="--checks=xss,xss_tag,sql_injection,xss_script_context,
+			xss_dom,xss_path,xss_event,xss_dom_inputs,xss_dom_script_context"/>
+		<arg value="--report-save-path=${basedir}/scan_reports/report.afr"/>
+	</exec>
+</target>
+<target name="arachni_reporter">
+	<exec executable="/home/administrator/arachni/bin/arachni_reporter">
+		<arg value="${basedir}/scan_reports/report.afr" />
+		<arg value="--report=html:outfile=${basedir}/scan_reports/arachni_report.html.zip" />
+	</exec>
+</target>
+<target name="unzip">
+	<exec executable="unzip">
+		<arg value="${basedir}/scan_reports/arachni_report.html.zip"/>
+		<arg value="-d${basedir}/scan_reports/arachni_report"/>
+	</exec>
+</target>
+</project>

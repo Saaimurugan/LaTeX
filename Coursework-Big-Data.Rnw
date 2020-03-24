@@ -1,0 +1,175 @@
+\documentclass{article}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\Title{1504107 - Coursework}
+
+\subTitle{1. Data Exploration}
+
+\subTitle{1.1 Dataset Choice}
+
+The dataset "Breast Cancer Wisconsin (Original)" was choosen and was obtained from UC Irvine Machine Learning Repository website. 
+
+I choose the "Breast Cancer Wisconsin (Original)" dataset as I believe I would be able to find solid relationships between the classes of tumors and the nine contrubuting factors within the dataset. 
+
+
+\subTitle{1.2 Problem Statement & Data Exploration}
+
+The choosen dataset contains records of patients with tumors, the tumors are classafied as either 'Benign' or 'Malignant'. Each tumor sample, uniquely identified using a 'Sample code number', is given various values from 1-10 on varing factors including 'Clump Thickness' and 'Mitoses'. The aim is to predict wether a tumor will be 'benign' or 'melignant' depending on these varying factors. 
+
+The dataset will be used to build a model to predict if a tumor is either melignant or benign. Using all nine of the other factor, the model created should be able to predict, with a fair degree of accuracy, wether or not a sample tumor is melignant or benign.
+
+<<>>=
+install.packages("randomForest")
+install.packages("gplots")
+install.packages("pROC")
+
+
+library(gplots)
+library(pROC)
+
+
+
+df =  read.csv("From_Desktop/dataset.csv")
+#df =  read.csv("Dataset.csv")
+
+ncol(df) 
+nrow(df)
+
+names(df) #1.2 Task 3 - Names of all the features(columns)
+
+
+#1.2 Task 4 - Class/Label distribution
+
+tumor <- table(df$Class)
+barplot(tumor, main="Tumor Class Distribution", col = rainbow(2), 
+  	xlab="Tumor Classification", names.arg=c("Benign", "Milignant"))
+
+@
+
+\subTitle{1.3 Pre-processing}
+As part of the pre-processing, all missing values must be replaced with the mean values of the corresponding factor. In the chosen data set, missing values were displayed using a question mark '?'. This question mark in the data made the attribute that they were contained in (only Bare Nuclei in the case) display as a factor, and not a numerical/integer value. Changing the Bare Nuclei attribute to numerical fixed the issue, and changed all question marks to the value NA, meaning null value.
+
+<<>>=
+na_counts <- sapply(df,function(x) sum(is.na(x))) #Setting na_counts to look at all attriubtes data and find any null values
+unique_vals<- sapply(df, function(x) length(unique(x))) #Setting unique_vals to look at all attributes unique values within the dataset
+
+na_counts #displays findings of all null values
+unique_vals #displays finding of all unique values
+
+df$Bare.Nuclei = as.numeric(as.character(df$Bare.Nuclei)) #Bare Nuclei is changed from a factor class to a numerical class
+
+na_counts <- sapply(df,function(x) sum(is.na(x))) #na_values is reset to show that missing values are shown now that the data as been set to numerical
+
+na_counts #displays updated findings of all null values
+
+df$Bare.Nuclei[is.na(df$Bare.Nuclei)] <- mean(df$Bare.Nuclei,na.rm=T) #All missing values in the dataset are set to the mean value of its attributes data.
+
+df$Bare.Nuclei <- round(df$Bare.Nuclei,0) #Values are rounded to its nearest whole number
+
+na_counts <- sapply(df,function(x) sum(is.na(x))) #Setting na_counts to look at all attriubtes data and find any null values
+unique_vals<- sapply(df, function(x) length(unique(x))) #Setting unique_vals to look at all attributes unique values within the dataset
+
+na_counts #displays updated findings of all null values, showing no more exist
+unique_vals #displays updated findings of all unique values
+
+@
+
+Certain features may need to be dropped as they are irrelevant to the findings that are to be found in the data. In this case, the only feature that is to be dropped is the ID feature, as it does not effect the finding to know what data applies to what user.
+
+<<>>=
+df <- df[-c(1)] #The data frame thats holding the dataset is updated to not include the feature 'ID' as it is not releveant. 
+
+df[1:3,] #Displaying small amount of the data to show that the data frame no longer contains the feature 'ID'
+
+df$Class [df$Class == "2"] <- "0"
+df$Class [df$Class == "4"] <- "1"
+
+df$Class <- as.numeric(df$Class)
+
+
+@
+
+\subTitle{2. Modelling/Classification }
+
+\subTitle{Training and Testing sets }
+The dataset contains 699 obervations which will be divided into training and testing sets. 80 percent of the data set will be used to as training data while the rest of the dataset will be used to test the model on its accuracy.
+
+<<>>=
+library(caret)
+splitIndex <- createDataPartition(df$Class, p = .80, list = FALSE, times = 1) #A function which splits the data set by 80%
+
+training <- df[ splitIndex,] #Putting 80% of the dataset into the training
+testing <- df[ -splitIndex,] #Putting the remaing data in the dataset into testing
+
+nrow(training)+nrow(testing)==nrow(df) #Code to test that the training and test sets add up to the total of observations in the dataset
+
+ctrl <- trainControl(method = "cv", number = 5)
+training$Class <- as.factor(training$Class) #Changing the training variable Class to a factor
+testing$Class <- as.factor(testing$Class) #Changing the testing variable Class to a factor
+@
+
+\subTitle{Testing the model }
+A Random Forest model is created using the training set. Part of the dataset is used as the training set, which is used for the model to learn to predict the classification of the tumor (benign or melignant) based on the data provided. Displaying the final model shows the estimated error rate to be 3.21\%.
+<<>>=
+rfModel <- train(Class ~ ., data = training, method = "rf", trControl = ctrl) #Creating the testing model
+
+pred <- predict(rfModel$finalModel, testing) #Using the model and testing it against the testing data
+accuracy <- mean(pred==testing$Class) #Taking the mean of the predictions to find out the accuracy
+
+cat('Accuracy is: ', accuracy) #The accuracy of the model
+
+rfModel$finalModel
+@
+
+\subTitle{Model performance }
+Calculating the rates of True Positives and False Positives is a good way to test the performance of the model you created. As it can be seen, The rate of True Positives and True Negatives are significantly higher than the False Positives/Negatives. This shows that the performance is really efficent. 
+<<>>=
+#Function that gets the metriceses given the dat
+getMetrics <- function(TP,FP,TN,FN){
+TPR=TP/(TP+FN);
+FPR=FP/(FP+TN);
+TNR=TN/(TN+FP);
+FNR=FN/(TP+FN);
+ACC=(TP+TN)/((TP+FN)+(FP+TN));
+SPC=TN/(FP+TN);
+SNS=TP/(TP+FN)
+metrics <- c('TPR','FPR','TNR','FNR','ACC',
+'SPC','SNS')
+values <- c(TPR,FPR,TNR,FNR,ACC,SPC,SNS)
+df_perf <- data.frame(Metrics=metrics,Values=values)
+
+df_perf
+}
+
+# Creating a tempoary dataset that stores the predicted and actual values ready to calculate info like True/False Positives
+tmpSet <- data.frame(Actual=testing$Class,Predicted=pred)
+tmpSet$correct <- as.numeric(tmpSet$Actual==tmpSet$Predicted)
+# Compute the True Positive(TP), False Postive(FP), True Negative(TN), False Negative(FN)
+tp <- tmpSet[tmpSet$Actual=='1' & tmpSet$Predicted=='1',]
+fp <- tmpSet[tmpSet$Actual=='0' & tmpSet$Predicted=='1',]
+tn <- tmpSet[tmpSet$Actual=='0' & tmpSet$Predicted=='0',]
+fn <- tmpSet[tmpSet$Actual=='1' & tmpSet$Predicted=='0',]
+# call the function and apply it to the results
+results <- getMetrics(nrow(tp),nrow(fp),nrow(tn),nrow(fn))
+
+results
+@
+
+A ROC Curve is a good visual representation of the performance of the model by displaying the rates of True Positives and so on in a graph.
+<<>>=
+options(scipen=999)
+
+library(ROCR)
+propos <- predict(mymodel,newdata=test[,-c(1,3)],type='response')
+pr <- prediction(propos, test$Survived)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
+
+@
+
+
+
+
+\end{document}
